@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <title>el Jimador | The Friendship Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+        
+        :root { 
+            --brand-blue: #00b3c2;
+            --brand-black: #212322;
+            --brand-white: #fff;
+        }
+        
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            font-family: 'Oswald', 'Arial Black', sans-serif;
+            letter-spacing: -0.02em;
+            background-color: var(--brand-blue);
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #root {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            height: 100dvh;
+            background-color: var(--brand-blue);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 640px) {
+            .app-wrapper {
+                height: 90vh;
+                max-height: 900px;
+                max-width: 414px;
+                border-radius: 2.5rem;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+                border: 8px solid white;
+            }
+        }
+
+        .pattern-bg {
+            background-image: url('Pattern_patternns.png');
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center;
+            opacity: 0.12;
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide { animation: slideUp 0.5s ease-out forwards; }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--brand-white);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .headline-bold {
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+        }
+
+        .text-condensed {
+            letter-spacing: -0.015em;
+            font-weight: 800;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .score-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b3c2 0%, #0099a8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .score-value {
+            font-size: 72px;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            margin-top: -8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+        
+        const Icons = {
+            Upload: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+            Share2: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+            RefreshCcw: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>,
+            ChevronRight: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+            Loader2: ({size=20, className=""}) => <svg className={`animate-spin ${className}`} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>,
+            Image: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
+            Info: ({size=20, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+        };
+
+        const LOGO_ASSET = "a-1.svg";
+
+        const DRINK_SCORES = {
+            "premium_tequila": { name: "Premium Tequila", score: 95, vibe: "CHOSEN WITH CARE" },
+            "good_tequila": { name: "Quality Tequila", score: 85, vibe: "RELIABLE FRIEND" },
+            "mixed_drinks": { name: "Mixed Drinks", score: 75, vibe: "KEEPS IT CHILL" },
+            "beer": { name: "Cold Beer", score: 65, vibe: "ALWAYS READY" },
+            "wine": { name: "Wine Selection", score: 70, vibe: "THOUGHTFUL" },
+            "spirits": { name: "Fine Spirits", score: 80, vibe: "SOPHISTICATED" },
+            "energy_drinks": { name: "Energy Drinks", score: 45, vibe: "PARTY STARTER" },
+            "non_alcoholic": { name: "Non-Alcoholic", score: 55, vibe: "DESIGNATED DRIVER" }
+        };
+
+        const Logo = ({ className = "w-48" }) => {
+            const [error, setError] = useState(false);
+            if (error) return (
+                <div className={`flex flex-col items-center justify-center ${className}`}>
+                    <span className="text-white font-black text-3xl leading-none uppercase headline-bold">el Jimador</span>
+                </div>
+            );
+            return <img src={LOGO_ASSET} alt="El Jimador" className={className} onError={() => setError(true)} />;
+        };
+
+        function App() {
+            const [step, setStep] = useState('splash');
+            const [uploadedImage, setUploadedImage] = useState(null);
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [friendshipScore, setFriendshipScore] = useState(null);
+            const [selectedDrink, setSelectedDrink] = useState(null);
+            const fileInputRef = useRef(null);
+
+            const handleImageUpload = (event) => {
+                const file = event.target.files?.[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        setUploadedImage(e.target.result);
+                        setStep('upload-preview');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const calculateScore = () => {
+                setIsProcessing(true);
+                
+                // Simulate AI analysis delay
+                setTimeout(() => {
+                    const drinkTypes = Object.keys(DRINK_SCORES);
+                    const randomDrink = drinkTypes[Math.floor(Math.random() * drinkTypes.length)];
+                    const score = DRINK_SCORES[randomDrink];
+                    
+                    setSelectedDrink(randomDrink);
+                    setFriendshipScore(score);
+                    setStep('results');
+                    setIsProcessing(false);
+                }, 2500);
+            };
+
+            const triggerUpload = () => {
+                fileInputRef.current?.click();
+            };
+
+            const resetTest = () => {
+                setUploadedImage(null);
+                setFriendshipScore(null);
+                setSelectedDrink(null);
+                setStep('splash');
+            };
+
+            if (step === 'splash') {
+                return (
+                    <div className="app-wrapper flex flex-col items-center justify-between p-6 pt-8 text-center relative overflow-y-auto">
+                        <div className="absolute inset-0 pattern-bg"></div>
+                        
+                        <div className="relative z-10 w-full flex justify-center pt-2">
+                            <Logo className="w-40" />
+                        </div>
+
+                        <div className="relative z-10 max-w-lg flex-1 flex flex-col justify-center px-4 py-8">
+                            <p className="text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-3 opacity-80">ENGAGEMENT CONCEPT</p>
+                            
+                            <h1 className="text-white text-5xl md:text-6xl font-black leading-[0.9] uppercase mb-6 headline-bold text-condensed">
+                                The Friendship Test
+                            </h1>
+
+                            <p className="text-white/90 text-sm font-bold uppercase tracking-wide mb-2 leading-relaxed">
+                                A system that calculates your "Friendship Score" based on what you bring to the table
+                            </p>
+
+                            <div className="glass-panel p-4 rounded-lg my-6">
+                                <p className="text-white text-xs font-bold uppercase tracking-tight leading-relaxed">
+                                    Upload a photo of what you bring to the table. We'll calculate your Friendship Score based on the drink you bring to the table.
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div className="text-white text-xs font-bold uppercase tracking-tight text-left opacity-70">
+                                    <p className="mb-2">• Bar installations with drinks on ranking board</p>
+                                    <p className="mb-2">• Social content rating what friends brought</p>
+                                    <p className="mb-2">• OOH shows comparative scores between drinks</p>
+                                    <p>• Influencers test their friends</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="relative z-10 w-full flex flex-col gap-3">
+                            <button 
+                                onClick={() => setStep('upload')}
+                                className="w-full bg-white text-[#00b3c2] px-8 py-5 rounded-lg font-black text-lg shadow-2xl active:scale-95 transition-transform flex items-center gap-3 justify-center uppercase text-condensed tracking-tight hover:bg-white/90"
+                            >
+                                <Icons.Upload size={24} /> TEST YOUR FRIENDSHIP
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'upload') {
+                return (
+                    <div className="app-wrapper flex flex-col items-center justify-center p-6 text-center relative">
+                        <div className="absolute inset-0 pattern-bg"></div>
+                        
+                        <input 
+                            ref={fileInputRef}
+                            type="file" 
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                        />
+
+                        <div className="relative z-10 flex flex-col items-center justify-center h-full gap-6">
+                            <Logo className="w-32" />
+
+                            <div className="max-w-xs">
+                                <h2 className="text-white text-4xl font-black uppercase mb-4 headline-bold text-condensed">
+                                    Upload Your Vibe
+                                </h2>
+                                <p className="text-white/80 text-sm font-bold uppercase tracking-wide mb-8">
+                                    Show us what you bring to the table
+                                </p>
+                            </div>
+
+                            <button 
+                                onClick={triggerUpload}
+                                className="w-48 h-48 bg-white/15 border-4 border-dashed border-white rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-white/20 transition-colors active:scale-95"
+                            >
+                                <Icons.Image size={48} className="text-white opacity-80" />
+                                <span className="text-white font-black uppercase text-sm text-condensed tracking-tight">
+                                    CLICK TO UPLOAD
+                                </span>
+                            </button>
+
+                            <button 
+                                onClick={() => setStep('splash')}
+                                className="text-white/60 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors"
+                            >
+                                ← BACK
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'upload-preview') {
+                return (
+                    <div className="app-wrapper flex flex-col items-center justify-between p-6 relative overflow-y-auto">
+                        <div className="absolute inset-0 pattern-bg"></div>
+
+                        <div className="relative z-10 w-full flex justify-center pt-2">
+                            <Logo className="w-32" />
+                        </div>
+
+                        <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 w-full max-w-xs">
+                            <div className="w-full aspect-square bg-white/10 rounded-2xl overflow-hidden border-4 border-white/20 animate-fade">
+                                <img 
+                                    src={uploadedImage} 
+                                    alt="Your upload" 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+
+                            <div>
+                                <p className="text-white/80 text-xs font-bold uppercase tracking-widest mb-2">
+                                    Ready to see your score?
+                                </p>
+                                <p className="text-white text-sm font-bold uppercase tracking-tight">
+                                    We're analyzing your friendship level...
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="relative z-10 w-full flex flex-col gap-3">
+                            <button 
+                                onClick={calculateScore}
+                                disabled={isProcessing}
+                                className="w-full bg-white text-[#00b3c2] px-8 py-5 rounded-lg font-black text-lg shadow-2xl active:scale-95 transition-transform flex items-center gap-3 justify-center uppercase text-condensed tracking-tight hover:bg-white/90 disabled:opacity-50"
+                            >
+                                {isProcessing ? (
+                                    <>
+                                        <Icons.Loader2 size={24} /> CALCULATING...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Icons.ChevronRight size={24} /> REVEAL SCORE
+                                    </>
+                                )}
+                            </button>
+                            
+                            <button 
+                                onClick={() => setStep('upload')}
+                                disabled={isProcessing}
+                                className="w-full text-white font-bold uppercase text-sm tracking-widest hover:text-white/80 transition-colors disabled:opacity-50"
+                            >
+                                UPLOAD DIFFERENT PHOTO
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'results' && friendshipScore) {
+                return (
+                    <div className="app-wrapper flex flex-col items-center justify-between p-6 relative overflow-y-auto">
+                        <div className="absolute inset-0 pattern-bg"></div>
+
+                        <div className="relative z-10 w-full flex justify-center pt-2">
+                            <Logo className="w-32" />
+                        </div>
+
+                        <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 w-full">
+                            <div className="animate-slide">
+                                <div className="score-ring">
+                                    <div>
+                                        <div className="score-value">{friendshipScore.score}</div>
+                                        <div className="score-label">FRIENDSHIP</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="text-center max-w-xs animate-slide" style={{animationDelay: '0.2s'}}>
+                                <p className="text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-2 opacity-80">
+                                    YOUR VIBE
+                                </p>
+                                <h2 className="text-white text-3xl font-black uppercase mb-4 headline-bold text-condensed">
+                                    {friendshipScore.vibe}
+                                </h2>
+                                <p className="text-white/70 text-sm font-bold uppercase tracking-tight">
+                                    {friendshipScore.name}
+                                </p>
+                            </div>
+
+                            <div className="glass-panel p-4 rounded-lg w-full max-w-xs animate-slide" style={{animationDelay: '0.4s'}}>
+                                <p className="text-white text-xs font-bold uppercase tracking-tight leading-relaxed">
+                                    You bring the energy that makes every gathering unforgettable. Your friendship score shows exactly how much value you add to the table.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="relative z-10 w-full flex flex-col gap-3">
+                            <button className="w-full flex items-center justify-center gap-2 bg-white text-[#00b3c2] p-4 rounded-lg font-black shadow-lg uppercase tracking-tight text-sm active:scale-95 transition-transform text-condensed hover:bg-white/90">
+                                <Icons.Share2 size={16} /> SHARE YOUR SCORE
+                            </button>
+                            
+                            <button 
+                                onClick={resetTest}
+                                className="w-full flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm text-white border-2 border-white p-3 rounded-lg font-black uppercase tracking-tight text-xs active:scale-95 transition-transform text-condensed"
+                            >
+                                <Icons.RefreshCcw size={12} /> TEST AGAIN
+                            </button>
+                            
+                            <p className="text-center text-[7px] text-white/50 font-bold uppercase tracking-widest pt-2">
+                                Enjoy Responsibly. Not for persons under 18.
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
