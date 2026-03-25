@@ -241,29 +241,18 @@
                         </div>
 
                         <div className="relative z-10 max-w-lg flex-1 flex flex-col justify-center px-4 py-8">
-                            <p className="text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-3 opacity-80">ENGAGEMENT CONCEPT</p>
-                            
-                            <h1 className="text-white text-5xl md:text-6xl font-black leading-[0.9] uppercase mb-6 headline-bold text-condensed">
+                            <h1 className="text-[#212322] text-5xl md:text-6xl font-black leading-[0.9] uppercase mb-6 headline-bold text-condensed">
                                 The Friendship Test
                             </h1>
 
-                            <p className="text-white/90 text-sm font-bold uppercase tracking-wide mb-2 leading-relaxed">
-                                A system that calculates your "Friendship Score" based on what you bring to the table
+                            <p className="text-[#212322]/80 text-sm font-bold uppercase tracking-wide mb-8 leading-relaxed">
+                                Show us what you bring to the table. We'll score your friendship level.
                             </p>
 
-                            <div className="glass-panel p-4 rounded-lg my-6">
-                                <p className="text-white text-xs font-bold uppercase tracking-tight leading-relaxed">
-                                    Upload a photo of what you bring to the table. We'll calculate your Friendship Score based on the drink you bring to the table.
+                            <div className="glass-panel p-4 rounded-lg">
+                                <p className="text-[#212322] text-xs font-bold uppercase tracking-tight leading-relaxed">
+                                    Upload a photo. Get roasted. Share your score.
                                 </p>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="text-white text-xs font-bold uppercase tracking-tight text-left opacity-70">
-                                    <p className="mb-2">• Bar installations with drinks on ranking board</p>
-                                    <p className="mb-2">• Social content rating what friends brought</p>
-                                    <p className="mb-2">• OOH shows comparative scores between drinks</p>
-                                    <p>• Influencers test their friends</p>
-                                </div>
                             </div>
                         </div>
 
@@ -295,27 +284,27 @@
                             <Logo className="w-32" />
 
                             <div className="max-w-xs">
-                                <h2 className="text-white text-4xl font-black uppercase mb-4 headline-bold text-condensed">
+                                <h2 className="text-[#212322] text-4xl font-black uppercase mb-4 headline-bold text-condensed">
                                     Upload Your Vibe
                                 </h2>
-                                <p className="text-white/80 text-sm font-bold uppercase tracking-wide mb-8">
+                                <p className="text-[#212322]/80 text-sm font-bold uppercase tracking-wide mb-8">
                                     Show us what you bring to the table
                                 </p>
                             </div>
 
                             <button 
                                 onClick={triggerUpload}
-                                className="w-48 h-48 bg-white/15 border-4 border-dashed border-white rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-white/20 transition-colors active:scale-95"
+                                className="w-48 h-48 bg-white/15 border-4 border-dashed border-[#212322] rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-white/20 transition-colors active:scale-95"
                             >
-                                <Icons.Image size={48} className="text-white opacity-80" />
-                                <span className="text-white font-black uppercase text-sm text-condensed tracking-tight">
+                                <Icons.Image size={48} className="text-[#212322] opacity-80" />
+                                <span className="text-[#212322] font-black uppercase text-sm text-condensed tracking-tight">
                                     CLICK TO UPLOAD
                                 </span>
                             </button>
 
                             <button 
                                 onClick={() => setStep('splash')}
-                                className="text-white/60 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors"
+                                className="text-[#212322]/60 hover:text-[#212322] text-xs font-bold uppercase tracking-widest transition-colors"
                             >
                                 ← BACK
                             </button>
@@ -343,10 +332,10 @@
                             </div>
 
                             <div>
-                                <p className="text-white/80 text-xs font-bold uppercase tracking-widest mb-2">
+                                <p className="text-[#212322]/80 text-xs font-bold uppercase tracking-widest mb-2">
                                     Ready to see your score?
                                 </p>
-                                <p className="text-white text-sm font-bold uppercase tracking-tight">
+                                <p className="text-[#212322] text-sm font-bold uppercase tracking-tight">
                                     We're analyzing your friendship level...
                                 </p>
                             </div>
@@ -372,7 +361,7 @@
                             <button 
                                 onClick={() => setStep('upload')}
                                 disabled={isProcessing}
-                                className="w-full text-white font-bold uppercase text-sm tracking-widest hover:text-white/80 transition-colors disabled:opacity-50"
+                                className="w-full text-[#212322] font-bold uppercase text-sm tracking-widest hover:text-[#212322]/80 transition-colors disabled:opacity-50"
                             >
                                 UPLOAD DIFFERENT PHOTO
                             </button>
@@ -401,19 +390,19 @@
                             </div>
 
                             <div className="text-center max-w-xs animate-slide" style={{animationDelay: '0.2s'}}>
-                                <p className="text-white/80 text-xs font-bold uppercase tracking-[0.2em] mb-2 opacity-80">
+                                <p className="text-[#212322]/80 text-xs font-bold uppercase tracking-[0.2em] mb-2 opacity-80">
                                     YOUR VIBE
                                 </p>
-                                <h2 className="text-white text-3xl font-black uppercase mb-4 headline-bold text-condensed">
+                                <h2 className="text-[#212322] text-3xl font-black uppercase mb-4 headline-bold text-condensed">
                                     {friendshipScore.vibe}
                                 </h2>
-                                <p className="text-white/70 text-sm font-bold uppercase tracking-tight">
+                                <p className="text-[#212322]/70 text-sm font-bold uppercase tracking-tight">
                                     {friendshipScore.name}
                                 </p>
                             </div>
 
                             <div className="glass-panel p-4 rounded-lg w-full max-w-xs animate-slide" style={{animationDelay: '0.4s'}}>
-                                <p className="text-white text-xs font-bold uppercase tracking-tight leading-relaxed">
+                                <p className="text-[#212322] text-xs font-bold uppercase tracking-tight leading-relaxed">
                                     You bring the energy that makes every gathering unforgettable. Your friendship score shows exactly how much value you add to the table.
                                 </p>
                             </div>
@@ -426,12 +415,12 @@
                             
                             <button 
                                 onClick={resetTest}
-                                className="w-full flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm text-white border-2 border-white p-3 rounded-lg font-black uppercase tracking-tight text-xs active:scale-95 transition-transform text-condensed"
+                                className="w-full flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm text-[#212322] border-2 border-[#212322] p-3 rounded-lg font-black uppercase tracking-tight text-xs active:scale-95 transition-transform text-condensed"
                             >
                                 <Icons.RefreshCcw size={12} /> TEST AGAIN
                             </button>
                             
-                            <p className="text-center text-[7px] text-white/50 font-bold uppercase tracking-widest pt-2">
+                            <p className="text-center text-[7px] text-[#212322]/50 font-bold uppercase tracking-widest pt-2">
                                 Enjoy Responsibly. Not for persons under 18.
                             </p>
                         </div>
